@@ -1,0 +1,17 @@
+# Simulation outputs
+*.vvp
+*.vcd
+sim/
+vcd/
+
+# Synthesis outputs
+netlists/
+
+# MATLAB/Octave analysis outputs
+results/
+*.asv
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
