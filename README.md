@@ -1,6 +1,6 @@
 # Hardware Security Analysis Framework
 
-A complete mini EDA security tool for detecting Hardware Trojans in RTL designs through side-channel analysis. This framework includes clean and Trojan-infected Verilog modules, testbenches, synthesis/simulation automation, and MATLAB-based statistical detection.
+A complete mini EDA security tool for detecting Hardware Trojans in RTL designs through side-channel analysis. This framework includes clean and Trojan-infected Verilog modules, testbenches, synthesis/simulation automation, and a full MATLAB-based analysis engine with ML detection and DPA.
 
 ---
 
@@ -25,8 +25,17 @@ A complete mini EDA security tool for detecting Hardware Trojans in RTL designs 
 │   ├── simulate.sh              # Icarus Verilog simulation → VCD files
 │   └── run_all.sh               # Master pipeline script
 │
-├── analyze_security.m           # MATLAB/Octave side-channel analysis
-└── README.md                    # This file
+├── MATLAB Analysis Engine (Part 4)
+│   ├── parse_vcd.m              # Universal VCD parser → toggle vectors
+│   ├── power_model.m            # P = α×C×V²×f dynamic power estimation
+│   ├── zscore_detect.m          # Z-score anomaly detection (±2.5σ)
+│   ├── pca_engine.m             # PCA cluster separation analysis
+│   ├── ml_detect.m              # Isolation Forest ML detection
+│   ├── dpa_engine.m             # Differential Power Analysis (CPA)
+│   ├── report_gen.m             # Auto-generate PDF report
+│   └── analyze_security.m       # Standalone analysis script
+│
+└── README.md
 ```
 
 ## Prerequisites
@@ -35,8 +44,8 @@ A complete mini EDA security tool for detecting Hardware Trojans in RTL designs 
 |------|---------|---------|
 | **Icarus Verilog** | RTL simulation | `sudo apt install iverilog` |
 | **Yosys** | Logic synthesis | `sudo apt install yosys` |
-| **MATLAB/Octave** | Statistical analysis | `sudo apt install octave` |
-| **GTKWave** (optional) | VCD waveform viewer | `sudo apt install gtkwave` |
+| **MATLAB/Octave** | Analysis engine | `sudo apt install octave` |
+| **GTKWave** (optional) | VCD viewer | `sudo apt install gtkwave` |
 
 ## Quick Start
 
@@ -46,10 +55,36 @@ chmod +x run_all.sh synthesize.sh simulate.sh
 ./run_all.sh
 
 # Or run individual steps:
-./synthesize.sh    # Step 1: Yosys synthesis
-./simulate.sh      # Step 2: Icarus simulation
-octave analyze_security.m  # Step 3: Analysis
+./synthesize.sh                    # Step 1: Yosys synthesis
+./simulate.sh                     # Step 2: Icarus simulation
+matlab -batch "report_gen"         # Step 3: Full analysis + PDF report
+
+# Or in Octave:
+octave --no-gui -e "report_gen"
 ```
+
+## Part 4 — MATLAB Analysis Engine
+
+The analysis pipeline is a connected set of MATLAB/Octave scripts:
+
+```
+parse_vcd.m → power_model.m → zscore_detect.m
+                             → pca_engine.m
+                             → ml_detect.m
+                             → dpa_engine.m
+                                    ↓
+                              report_gen.m → PDF Report
+```
+
+| Script | Method | Output |
+|--------|--------|--------|
+| `parse_vcd.m` | VCD parsing → toggle vectors | Structured signal data |
+| `power_model.m` | P = α×C×V²×f estimation | Power deviation (mW) |
+| `zscore_detect.m` | Z-score (±2.5σ threshold) | Ranked suspicious signals |
+| `pca_engine.m` | PCA + Mahalanobis distance | Cluster plots, outliers |
+| `ml_detect.m` | Isolation Forest | Precision, Recall, F1, ROC, AUC |
+| `dpa_engine.m` | CPA correlation attack | Recovered key bytes |
+| `report_gen.m` | Aggregate all results | PDF report |
 
 ## Trojan Descriptions
 
@@ -63,25 +98,36 @@ octave analyze_security.m  # Step 3: Analysis
 
 ### AES Trojan
 
-The AES Trojan maintains **functionally correct encryption** but adds a hidden `trojan_leak` register that XORs key bits when `plaintext[7:0] == 8'hFF`. This creates detectable extra switching activity in power/VCD analysis without corrupting the ciphertext.
+Maintains **functionally correct encryption** but adds a hidden `trojan_leak` register that XORs key bits when `plaintext[7:0] == 8'hFF`, creating detectable extra switching activity for side-channel analysis.
 
 ## Port Specifications
 
 **ALU** (all variants identical):
-```
+```verilog
 A[3:0], B[3:0], op[1:0], result[3:0], clk, rst
 ```
 
 **AES** (both variants identical):
-```
+```verilog
 clk, rst, key[127:0], plaintext[127:0], ciphertext[127:0]
 ```
 
 ## Output Files
 
-After running the pipeline:
+After running the full pipeline:
 
-- `netlists/` — Gate-level Verilog netlists + JSON + synthesis logs
-- `vcd/` — VCD waveform files for GTKWave inspection
-- `sim/` — Compilation and simulation logs
-- `results/` — Analysis plots and detection report
+```
+├── netlists/          # Gate-level Verilog netlists + synthesis logs
+├── vcd/               # VCD waveform files
+├── sim/               # Compilation and simulation logs
+└── results/
+    ├── hardware_security_report.pdf
+    ├── analysis_report.txt
+    ├── power_deviation.png
+    ├── power_traces.png
+    ├── zscore_detection.png
+    ├── pca_clusters.png
+    ├── ml_detection.png
+    ├── dpa_correlation.png
+    └── analysis_workspace.mat
+```
