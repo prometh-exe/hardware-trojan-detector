@@ -4,6 +4,110 @@ A complete mini EDA security tool for detecting Hardware Trojans in RTL designs 
 
 ---
 
+## Pipeline Architecture
+
+![Pipeline Flow](docs/pipeline_flow.png)
+
+```mermaid
+flowchart TD
+    subgraph PART1["Part 1 — RTL Design"]
+        direction LR
+        CLEAN["🟢 Clean Designs\nalu_clean.v\naes_clean.v"]
+        TROJAN["🔴 Trojan Variants\nalu_trojan_comb.v\nalu_trojan_seq.v\nalu_trojan_counter.v\naes_trojan.v"]
+    end
+
+    subgraph PART2["Part 2 — Testbenches"]
+        TB_ALU["alu_tb.v\n(4 variants parallel)"]
+        TB_AES["aes_tb.v\n(clean vs trojan)"]
+    end
+
+    subgraph PART3["Part 3 — Automation"]
+        direction LR
+        SYNTH["⚙️ Yosys\nsynthesize.sh"]
+        SIM["🔬 Icarus Verilog\nsimulate.sh"]
+        MASTER["🚀 run_all.sh\n(zero manual steps)"]
+    end
+
+    subgraph VCD["6 VCD Files"]
+        direction LR
+        V1["alu_clean.vcd"]
+        V2["alu_trojan_comb.vcd"]
+        V3["alu_trojan_seq.vcd"]
+        V4["alu_trojan_counter.vcd"]
+        V5["aes_clean.vcd"]
+        V6["aes_trojan.vcd"]
+    end
+
+    subgraph PART4["Part 4 — MATLAB Analysis Engine"]
+        PARSE["📊 parse_vcd.m\nToggle Extraction"]
+        POWER["⚡ power_model.m\nP = α×C×V²×f"]
+        ZSCORE["📈 zscore_detect.m\n±2.5σ Anomaly"]
+        PCA["🎯 pca_engine.m\nCluster Separation"]
+        ML["🤖 ml_detect.m\nIsolation Forest"]
+        DPA["🔓 dpa_engine.m\nCPA Key Recovery"]
+        REPORT["📄 report_gen.m\nPDF Report"]
+    end
+
+    subgraph PART5["Part 5 — Interactive Dashboard"]
+        DASH["🖥️ trojan_dashboard.m\nLive Analysis GUI"]
+    end
+
+    CLEAN --> PART2
+    TROJAN --> PART2
+    PART2 --> SYNTH
+    SYNTH --> SIM
+    SIM --> VCD
+    MASTER -.->|orchestrates| SYNTH
+    MASTER -.->|orchestrates| SIM
+    MASTER -.->|orchestrates| REPORT
+    VCD --> PARSE
+    PARSE --> POWER
+    PARSE --> ZSCORE
+    PARSE --> PCA
+    PARSE --> ML
+    PARSE --> DPA
+    POWER --> REPORT
+    ZSCORE --> REPORT
+    PCA --> REPORT
+    ML --> REPORT
+    DPA --> REPORT
+    PARSE --> DASH
+    POWER --> DASH
+    ZSCORE --> DASH
+    PCA --> DASH
+
+    style CLEAN fill:#166534,stroke:#22c55e,color:#fff
+    style TROJAN fill:#991b1b,stroke:#ef4444,color:#fff
+    style PARSE fill:#1e3a5f,stroke:#3b82f6,color:#fff
+    style POWER fill:#1e3a5f,stroke:#3b82f6,color:#fff
+    style ZSCORE fill:#1e3a5f,stroke:#3b82f6,color:#fff
+    style PCA fill:#1e3a5f,stroke:#3b82f6,color:#fff
+    style ML fill:#1e3a5f,stroke:#3b82f6,color:#fff
+    style DPA fill:#1e3a5f,stroke:#3b82f6,color:#fff
+    style REPORT fill:#4c1d95,stroke:#8b5cf6,color:#fff
+    style DASH fill:#4c1d95,stroke:#8b5cf6,color:#fff
+    style MASTER fill:#854d0e,stroke:#eab308,color:#fff
+```
+
+### How It Works (Step by Step)
+
+| Step | Component | Input | Output | Tool |
+|------|-----------|-------|--------|------|
+| **1** | RTL Design | Specification | 7 Verilog modules (4 ALU + 2 AES + S-Box) | Manual |
+| **2** | Testbenches | RTL modules | Stimulus + verification (12,000+ cycles) | Manual |
+| **3a** | Synthesis | Verilog source | Gate-level netlists in `netlists/` | Yosys |
+| **3b** | Simulation | Netlists + TBs | 6 individual VCD waveform files | Icarus Verilog |
+| **4a** | VCD Parse | `.vcd` files | Toggle vectors (per-signal switching counts) | MATLAB |
+| **4b** | Power Model | Toggle vectors | Power estimates (mW) via P=αCV²f | MATLAB |
+| **4c** | Z-Score | Toggle vectors | Anomalous signals (>±2.5σ) ranked list | MATLAB |
+| **4d** | PCA | Toggle features | 2D cluster plot + Mahalanobis outliers | MATLAB |
+| **4e** | ML Detect | Toggle features | Precision/Recall/F1/AUC per Trojan type | MATLAB |
+| **4f** | DPA/CPA | AES toggles | Recovered key bytes + correlation traces | MATLAB |
+| **5** | Report | All results | 3-page PDF + text summary | MATLAB |
+| **6** | Dashboard | All results | Interactive GUI with 5 analysis views | MATLAB |
+
+---
+
 ## Project Structure
 
 ```
