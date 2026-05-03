@@ -1,0 +1,234 @@
+ 
+To get started, type doc.
+For product information, visit www.mathworks.com.
+ 
+
+╔══════════════════════════════════════════════════════════════╗
+║       Hardware Security Analysis — Report Generator         ║
+╚══════════════════════════════════════════════════════════════╝
+
+Running full analysis pipeline...
+
+─── Parsing ALU VCD ───
+
+========================================
+ parse_vcd: Parsing vcd/alu_all.vcd
+========================================
+  [WARNING] VCD file not found: vcd/alu_all.vcd
+  Generating synthetic toggle data from simulation model...
+  Generated synthetic data: 24 signals, 12000 timestamps
+
+─── Parsing AES VCD ───
+
+========================================
+ parse_vcd: Parsing vcd/aes_all.vcd
+========================================
+  [WARNING] VCD file not found: vcd/aes_all.vcd
+  Generating synthetic toggle data from simulation model...
+  Generated synthetic data: 16 signals, 10200 timestamps
+
+─── Power Model (ALU) ───
+
+========================================
+ power_model: Dynamic Power Estimation
+========================================
+  Technology: 45nm
+  Supply Voltage: 1.20 V
+  Clock Frequency: 100.0 MHz
+  Capacitance model loaded (45nm)
+
+  Saved: results\power_deviation.png
+  Saved: results\power_traces.png
+
+  Power Estimation Summary:
+  Signal                                              α-factor   C(pF)    P_avg(mW)   Dev(mW)
+  -----------------------------------------------------------------------------------------------
+  alu_tb.u_counter.op_counter                         0.3015    0.2000   0.008684    +0.000000
+  alu_tb.clk                                          1.0000    0.0250   0.003600    +0.000000
+  alu_tb.u_counter.result                             0.3723    0.0571   0.003063    +0.000920
+  alu_tb.u_counter.A                                  0.2999    0.0571   0.002468    +0.001081
+  alu_tb.u_counter.B                                  0.2991    0.0571   0.002462    +0.001094
+  alu_tb.u_comb.result                                0.3750    0.0400   0.002160    +0.000017
+  alu_tb.u_seq.result                                 0.3746    0.0400   0.002158    +0.000014
+  alu_tb.u_clean.result                               0.3721    0.0400   0.002144    +0.000000
+  alu_tb.u_seq.seq_state                              0.2981    0.0360   0.001545    +0.000000
+  alu_tb.u_comb.B                                     0.3059    0.0320   0.001410    +0.000042
+  alu_tb.u_seq.A                                      0.3043    0.0320   0.001402    +0.000015
+  alu_tb.u_clean.A                                    0.3010    0.0320   0.001387    +0.000000
+  alu_tb.u_comb.A                                     0.3005    0.0320   0.001385    -0.000002
+  alu_tb.u_seq.B                                      0.2997    0.0320   0.001381    +0.000014
+  alu_tb.u_clean.B                                    0.2967    0.0320   0.001367    +0.000000
+  alu_tb.u_counter.op                                 0.2954    0.0286   0.001215    +0.000524
+  alu_tb.u_seq.payload_count                          0.2981    0.0240   0.001030    +0.000000
+  alu_tb.u_seq.op                                     0.3046    0.0160   0.000702    +0.000010
+  alu_tb.u_clean.op                                   0.3002    0.0160   0.000692    +0.000000
+  alu_tb.u_comb.op                                    0.2977    0.0160   0.000686    -0.000006
+
+  Clean total power:  0.005589 mW
+  Trojan total power: 0.032389 mW
+  Trojan overhead:    +479.49%
+
+  power_model complete.
+
+─── Power Model (AES) ───
+
+========================================
+ power_model: Dynamic Power Estimation
+========================================
+  Technology: 45nm
+  Supply Voltage: 1.20 V
+  Clock Frequency: 100.0 MHz
+  Capacitance model loaded (45nm)
+
+  Saved: results\power_deviation.png
+  Saved: results\power_traces.png
+
+  Power Estimation Summary:
+  Signal                                              α-factor   C(pF)    P_avg(mW)   Dev(mW)
+  -----------------------------------------------------------------------------------------------
+  aes_tb.u_aes_trojan.state                           0.3707    1.6000   0.085399    +0.004112
+  aes_tb.u_aes_clean.state                            0.3528    1.6000   0.081286    +0.000000
+  aes_tb.u_aes_trojan.round_key                       0.2890    1.6000   0.066582    +0.003607
+  aes_tb.u_aes_clean.round_key                        0.2733    1.6000   0.062975    +0.000000
+  aes_tb.plaintext                                    0.0359    1.6000   0.008281    +0.000000
+  aes_tb.key                                          0.0326    1.6000   0.007500    +0.000000
+  aes_tb.u_aes_clean.ciphertext                       0.0324    1.6000   0.007454    +0.000000
+  aes_tb.u_aes_trojan.ciphertext                      0.0324    1.6000   0.007454    +0.000000
+  aes_tb.clk                                          1.0000    0.0250   0.003600    +0.000000
+  aes_tb.u_aes_clean.round                            0.5034    0.0480   0.003480    +0.000000
+  aes_tb.u_aes_trojan.round                           0.5034    0.0480   0.003480    +0.000000
+  aes_tb.u_aes_trojan.trojan_leak                     0.0061    1.6000   0.001416    +0.000000
+  aes_tb.u_aes_clean.busy                             0.0833    0.0120   0.000144    +0.000000
+  aes_tb.u_aes_trojan.busy                            0.0833    0.0120   0.000144    +0.000000
+  aes_tb.u_aes_trojan.trojan_trigger                  0.0200    0.0080   0.000023    +0.000000
+  aes_tb.rst                                          0.0003    0.0150   0.000001    +0.000000
+
+  Clean total power:  0.155339 mW
+  Trojan total power: 0.164498 mW
+  Trojan overhead:    +5.90%
+
+  power_model complete.
+
+─── Z-Score Detection (ALU) ───
+
+========================================
+ zscore_detect: Z-Score Anomaly Detection
+========================================
+  Z-score threshold: ±2.5 σ
+  Saved: results\zscore_detection.png
+
+  Z-Score Analysis Results:
+  Signal                                              Z-Score    Total Toggles  Verdict
+  ----------------------------------------------------------------------------------------------------
+  alu_tb.clk                                           +3.782       12000       ANOMALOUS (high activity)
+
+  Total signals analyzed: 24
+  Signals flagged:       1
+  Threshold:             ±2.5σ
+
+  zscore_detect complete.
+
+─── Z-Score Detection (AES) ───
+
+========================================
+ zscore_detect: Z-Score Anomaly Detection
+========================================
+  Z-score threshold: ±2.5 σ
+  Saved: results\zscore_detection.png
+
+  Z-Score Analysis Results:
+  Signal                                              Z-Score    Total Toggles  Verdict
+  ----------------------------------------------------------------------------------------------------
+  aes_tb.clk                                           +2.823       10200       ANOMALOUS (high activity)
+
+  Total signals analyzed: 16
+  Signals flagged:       1
+  Threshold:             ±2.5σ
+
+  zscore_detect complete.
+
+─── PCA Analysis (ALU) ───
+
+========================================
+ pca_engine: PCA Cluster Analysis
+========================================
+  Signals: 24, Timestamps: 12000
+  Running PCA with 2 components...
+  Variance explained: PC1=51.6% PC2=20.4% (Total: 72.0%)
+  Silhouette score (clean vs trojan): -0.429
+  Outliers detected: 6
+  Saved: results\pca_clusters.png
+
+  PCA Outlier Analysis:
+  Signal                                              Label      Mahal.Dist  Outlier?
+  -------------------------------------------------------------------------------------
+  alu_tb.clk                                          Control     16.235     *** OUTLIER ***
+  alu_tb.u_comb.trojan_trigger                        Trojan      13.301     *** OUTLIER ***
+  alu_tb.u_seq.trojan_active                          Trojan      10.717     *** OUTLIER ***
+  alu_tb.rst                                          Control     10.711     *** OUTLIER ***
+  alu_tb.u_counter.trojan_trigger                     Trojan       4.677     *** OUTLIER ***
+  alu_tb.u_counter.op_counter                         Trojan       3.033     *** OUTLIER ***
+  alu_tb.u_comb.op                                    Trojan       1.623    
+  alu_tb.u_counter.op                                 Trojan       1.573    
+  alu_tb.u_seq.result                                 Trojan       1.504    
+  alu_tb.u_clean.op                                   Clean        1.500    
+  alu_tb.u_counter.result                             Trojan       1.499    
+  alu_tb.u_clean.result                               Clean        1.498    
+  alu_tb.u_seq.payload_count                          Trojan       1.494    
+  alu_tb.u_comb.result                                Trojan       1.488    
+  alu_tb.u_seq.op                                     Trojan       1.392    
+
+  pca_engine complete.
+
+─── ML Detection (ALU) ───
+
+========================================
+ ml_detect: Isolation Forest Detection
+========================================
+  Trees: 150, Sample size: 256, Contamination: 0.05
+  Feature matrix: 600 samples × 120 features
+  Training Isolation Forest on clean data...
+  Combinational         P=0.504  R=0.993  F1=0.669  AUC=0.529
+  Counter               P=0.504  R=0.988  F1=0.667  AUC=0.530
+  Sequential            P=0.503  R=0.988  F1=0.667  AUC=0.518
+
+  Saved: results\ml_detection.png
+
+  ═══════════════════════════════════════════════════════
+  ML Detection Results Summary
+  ═══════════════════════════════════════════════════════
+  Trojan Variant        Precision  Recall   F1       AUC
+  ------------------------------------------------------------
+  Combinational         0.5038     0.9933   0.6685   0.5290
+  Counter               0.5038     0.9883   0.6674   0.5300
+  Sequential            0.5030     0.9883   0.6667   0.5183
+  ═══════════════════════════════════════════════════════
+
+  ml_detect complete.
+
+─── DPA Attack (AES) ───
+
+========================================
+ dpa_engine: Differential Power Analysis
+========================================
+  Signals: 16, Time points: 10200
+  Number of encryption traces: 500
+  Attacking key byte 0... recovered=0xDA, corr=0.1626, margin=0.0045
+  Attacking key byte 1... recovered=0x1F, corr=0.1632, margin=0.0124
+  Attacking key byte 2... recovered=0x7A, corr=0.2121, margin=0.0247
+  Attacking key byte 3... recovered=0x92, corr=0.1525, margin=0.0097
+  Attacking key byte 4... recovered=0xF9, corr=0.1476, margin=0.0023
+  Attacking key byte 5... recovered=0xD3, corr=0.1643, margin=0.0003
+  Attacking key byte 6... recovered=0x12, corr=0.1676, margin=0.0197
+  Attacking key byte 7... recovered=0x4F, corr=0.1511, margin=0.0048
+  Attacking key byte 8... recovered=0xEA, corr=0.1842, margin=0.0042
+  Attacking key byte 9... recovered=0xA5, corr=0.1482, margin=0.0034
+  Attacking key byte 10... recovered=0x3E, corr=0.1764, margin=0.0204
+  Attacking key byte 11... recovered=0x43, corr=0.1511, margin=0.0073
+  Attacking key byte 12... recovered=0xFC, corr=0.1652, margin=0.0104
+  Attacking key byte 13... recovered=0xD2, corr=0.1734, margin=0.0181
+  Attacking key byte 14... recovered=0xFA, corr=0.1672, margin=0.0064
+  Attacking key byte 15... recovered=0x85, corr=0.1617, margin=0.0020
+ERROR: Unrecognized property FontFamily for class Text.
+  at dpa_engine line 255
+  at report_gen line 70

@@ -129,7 +129,7 @@ function report_gen(varargin)
 
     y_pos = 0.71;
     for i = 1:length(summary_lines)
-        text(0.07, y_pos, summary_lines{i}, 'FontSize', 9, 'FontFamily', 'Helvetica');
+        text(0.07, y_pos, summary_lines{i}, 'FontSize', 9);
         y_pos = y_pos - 0.027;
     end
 
@@ -226,7 +226,7 @@ function report_gen(varargin)
 
         for k = 1:num_show
             y_tab = y_tab - 0.022;
-            text(0.07, y_tab, all_suspicious(k).name, 'FontSize', 7, 'FontFamily', 'Courier');
+            text(0.07, y_tab, all_suspicious(k).name, 'FontSize', 7);
             text(0.55, y_tab, sprintf('%+.3f', all_suspicious(k).zscore), 'FontSize', 8);
             text(0.70, y_tab, all_suspicious(k).verdict, 'FontSize', 7, ...
                 'Color', [0.8 0 0]);
@@ -310,7 +310,7 @@ function report_gen(varargin)
     y_pos = y_pos - 0.03;
 
     key_str = sprintf('%02X ', aes_dpa.recovered_key_bytes);
-    text(0.07, y_pos, key_str, 'FontSize', 11, 'FontFamily', 'Courier', ...
+    text(0.07, y_pos, key_str, 'FontSize', 11, ...
         'Color', [0.7 0.1 0.1]);
     y_pos = y_pos - 0.03;
 
