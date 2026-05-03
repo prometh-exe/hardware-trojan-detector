@@ -35,6 +35,9 @@ A complete mini EDA security tool for detecting Hardware Trojans in RTL designs 
 │   ├── report_gen.m             # Auto-generate PDF report
 │   └── analyze_security.m       # Standalone analysis script
 │
+├── Interactive Dashboard (Part 5)
+│   └── trojan_dashboard.m       # MATLAB App — full interactive GUI
+│
 └── README.md
 ```
 
@@ -85,6 +88,24 @@ parse_vcd.m → power_model.m → zscore_detect.m
 | `ml_detect.m` | Isolation Forest | Precision, Recall, F1, ROC, AUC |
 | `dpa_engine.m` | CPA correlation attack | Recovered key bytes |
 | `report_gen.m` | Aggregate all results | PDF report |
+
+## Part 5 — Interactive Dashboard
+
+Launch the GUI with:
+```matlab
+trojan_dashboard
+```
+
+**Features:**
+- **VCD Upload** — File picker for Clean and Trojan VCD files
+- **Analysis Dropdown** — Select from 5 analysis views:
+  - Toggle Comparison (Bar Chart)
+  - Power Deviation (Heat Map)
+  - PCA Clusters (Scatter Plot)
+  - Anomaly Scores (Timeline)
+  - Suspicious Signals (Red Flags)
+- **Generate PDF Report** — One-click button triggers `report_gen.m`
+- Dark-themed UI with interactive plots
 
 ## Trojan Descriptions
 
